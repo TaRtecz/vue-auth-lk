@@ -38,6 +38,7 @@ export default {
   },
 
   mounted() {
+      this.info = this.$store.state.auth.user.first_name
     if (!this.currentUser) {
       this.$router.push('/login');
     }
