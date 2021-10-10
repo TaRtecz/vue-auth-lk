@@ -12,7 +12,6 @@
                         <label for="phone">Телефон</label>
                         <input v-model="forgotForm.phone" type="text" class="form-control" id="phone" placeholder="Телефон">
                     </div>
-
                     <button @click="nextStep"  type="button" class="btn btn-primary">Отправить код</button>
                 </div>
 
