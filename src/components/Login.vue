@@ -34,6 +34,7 @@
           </div>
         </div>
       </Form>
+      <router-link to="/forgotpass" class="btn btn-secondary">Забыли Пароль?</router-link>
     </div>
   </div>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <header class="jumbotron">
-      <h3> Добро пожаловать! </h3>
-      <h5>{{ this.$store.state.auth.user.first_name }}</h5>
-      <h5>{{ this.$store.state.auth.user.last_name }}</h5>
+      <h3> {{welcome_msg}} </h3>
+      <h5></h5>
+      <h5>/*this.$store.state.auth.user.last_name*/ </h5>
     </header>
   </div>
 </template>
@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       content: "",
+      welcome_msg: "Добро пожаловать!",
     };
   },
   mounted() {

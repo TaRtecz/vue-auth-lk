@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth-header';
 
 const API_URL = 'https://backend-front-test.dev.echo-company.ru/api/';
 
@@ -8,7 +9,7 @@ class AuthService {
             .post(API_URL + 'auth/login', {
                 phone: user.phone,
                 password: user.password
-            })
+            }, { headers: authHeader() })
             .then(response => {
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);

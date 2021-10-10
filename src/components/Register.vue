@@ -14,12 +14,12 @@
             <ErrorMessage name="phone" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="first_name">first_name</label>
+            <label for="first_name">First name</label>
             <Field name="first_name" type="text" class="form-control" />
             <ErrorMessage name="first_name" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="last_name">last_name</label>
+            <label for="last_name">Last name</label>
             <Field name="last_name" type="text" class="form-control" />
             <ErrorMessage name="last_name" class="error-feedback" />
           </div>
