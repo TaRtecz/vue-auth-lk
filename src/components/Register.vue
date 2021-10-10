@@ -9,14 +9,19 @@
       <Form @submit="handleRegister" :validation-schema="schema">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="username">Username</label>
-            <Field name="username" type="text" class="form-control" />
-            <ErrorMessage name="username" class="error-feedback" />
+            <label for="phone">Phone</label>
+            <Field name="phone" type="text" class="form-control" />
+            <ErrorMessage name="phone" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
-            <Field name="email" type="email" class="form-control" />
-            <ErrorMessage name="email" class="error-feedback" />
+            <label for="first_name">first_name</label>
+            <Field name="first_name" type="text" class="form-control" />
+            <ErrorMessage name="first_name" class="error-feedback" />
+          </div>
+          <div class="form-group">
+            <label for="last_name">last_name</label>
+            <Field name="last_name" type="text" class="form-control" />
+            <ErrorMessage name="last_name" class="error-feedback" />
           </div>
           <div class="form-group">
             <label for="password">Password</label>
@@ -60,15 +65,18 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      username: yup
+      phone: yup
         .string()
-        .required("Username is required!")
+        .required("Phone is required!")
         .min(3, "Must be at least 3 characters!")
-        .max(20, "Must be maximum 20 characters!"),
-      email: yup
+        .max(11, "Must be maximum 11 characters!"),
+      first_name: yup
         .string()
-        .required("Email is required!")
-        .email("Email is invalid!")
+        .required("First name is required!")
+        .max(50, "Must be maximum 50 characters!"),
+      last_name: yup
+        .string()
+        .required("Last name is required!")
         .max(50, "Must be maximum 50 characters!"),
       password: yup
         .string()
