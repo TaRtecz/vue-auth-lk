@@ -10,7 +10,7 @@
                 <div v-show="step === 1" class="step">
                     <div class="form-group">
                         <label for="phone">Телефон</label>
-                        <input v-model="forgotForm.phone" type="text" class="form-control" id="phone" placeholder="Телефон">
+                        <input v-model="phone" type="text" class="form-control" id="phone" placeholder="Телефон">
                     </div>
                     <button @click="nextStep"  type="submit" class="btn btn-primary">Отправить код</button>
                 </div>
@@ -19,7 +19,7 @@
                 <div v-show="step === 2" class="step">
                     <div class="form-group">
                         <label for="codeSMS">Код из СМС</label>
-                        <input v-model="forgotForm.codeSMS" type="text" class="form-control" id="codeSMS" placeholder="Код из СМС">
+                        <input v-model="codeSMS" type="text" class="form-control" id="codeSMS" placeholder="Код из СМС">
                         <p>Отправить код повторно, через {{timertoSend}} секунд</p>
                         <button type="button" class="codeResend btn mt-2" v-bind:disabled="isButtonDisabled">Отправить код повторно</button>
                     </div>
@@ -47,6 +47,9 @@
 
 
 <script>
+import axios from 'axios';
+const API_URL = 'https://backend-front-test.dev.echo-company.ru/api/';
+
 export default {
     name: 'ForgotPass',
     data() {
@@ -56,10 +59,8 @@ export default {
             message: "",
             isButtonDisabled: true,
             timertoSend: 20,
-            forgotForm: {
-                phone: '',
-                codeSMS: '',
-            },
+            phone: '',
+            codeSMS: '',
         }
       },
 
@@ -94,24 +95,33 @@ export default {
                 this.timertoSend = 20;
             }
         },
-        handleForgotPass(forgotForm) {
+    async handleForgotPass() {
             this.loading = true;
 
-            this.$store.dispatch("auth/login", forgotForm).then(
-                (data) => {
-                this.message = data.message;
-
-                },
-                (error) => {
-                this.loading = false;
-                this.message =
-                    (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+        await axios.post(API_URL + 'user/forgot-start', {
+            phone: this.phone,
+        })
+        .then(response => {
+            if (response.data) {
+                this.message = response.data.message;
+                if (response.data.success == true){
+                    console.log(response.data);
                 }
-            );
+                
+                
+            }
+
+            return response.data;
+        },(error) => {
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          this.successful = false;
+          this.loading = false;
+        });
         },
     }
 }

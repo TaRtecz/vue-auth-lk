@@ -9,22 +9,22 @@
       <Form @submit="handleRegister" :validation-schema="schema">
         <div v-if="!successful">
           <div class="form-group">
-            <label for="phone">Phone</label>
+            <label for="phone">Номер телефона</label>
             <Field name="phone" type="text" class="form-control" />
             <ErrorMessage name="phone" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="first_name">First name</label>
+            <label for="first_name">Имя</label>
             <Field name="first_name" type="text" class="form-control" />
             <ErrorMessage name="first_name" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="last_name">Last name</label>
+            <label for="last_name">Фамилия</label>
             <Field name="last_name" type="text" class="form-control" />
             <ErrorMessage name="last_name" class="error-feedback" />
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">Пароль</label>
             <Field name="password" type="password" class="form-control" />
             <ErrorMessage name="password" class="error-feedback" />
           </div>
@@ -35,7 +35,7 @@
                 v-show="loading"
                 class="spinner-border spinner-border-sm"
               ></span>
-              Sign Up
+              Регистрация
             </button>
           </div>
         </div>
@@ -55,6 +55,9 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import axios from 'axios';
+import authHeader from '../services/auth-header';
+const API_URL = 'https://backend-front-test.dev.echo-company.ru/api/';
 
 export default {
   name: "Register",
@@ -108,11 +111,30 @@ export default {
       this.successful = false;
       this.loading = true;
 
-      this.$store.dispatch("auth/register", user).then(
-        () => {
-          this.$router.push("/home");
-        },
-        (error) => {
+  await axios.post(API_URL + 'user/registration', {
+            phone: user.phone,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            password: user.password
+        })
+        .then(response => {
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                axios.get(API_URL + 'huser', { headers: authHeader() })
+                      .then(response => {
+                        if (response.data) {
+                            localStorage.setItem('user', JSON.stringify(response.data));
+                            user = JSON.parse(localStorage.getItem('user'));
+                            console.log(user)
+                            this.$store.dispatch("auth/loginuser", user)
+                            this.$router.push("/home");
+                        }
+                        return response.data;
+                    });
+            }
+
+            return response.data;
+        },(error) => {
           this.message =
             (error.response &&
               error.response.data &&
@@ -121,8 +143,25 @@ export default {
             error.toString();
           this.successful = false;
           this.loading = false;
-        }
-      );
+        });
+
+
+
+      // this.$store.dispatch("auth/register", user).then(
+      //   () => {
+      //     this.$router.push("/home");
+      //   },
+      //   (error) => {
+      //     this.message =
+      //       (error.response &&
+      //         error.response.data &&
+      //         error.response.data.message) ||
+      //       error.message ||
+      //       error.toString();
+      //     this.successful = false;
+      //     this.loading = false;
+      //   }
+      // );
     },
   },
 };

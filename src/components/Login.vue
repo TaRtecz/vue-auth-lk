@@ -8,12 +8,12 @@
       />
       <Form @submit="handleLogin" :validation-schema="schema">
         <div class="form-group">
-          <label for="phone">Phone</label>
+          <label for="phone">Номер телефона</label>
           <Field name="phone" type="text" class="form-control" />
           <ErrorMessage name="phone" class="error-feedback" />
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Пароль</label>
           <Field name="password" type="password" class="form-control" />
           <ErrorMessage name="password" class="error-feedback" />
         </div>
@@ -24,7 +24,7 @@
               v-show="loading"
               class="spinner-border spinner-border-sm"
             ></span>
-            <span>Login</span>
+            <span>Войти</span>
           </button>
         </div>
 
@@ -42,6 +42,8 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import axios from 'axios';
+import authHeader from '../services/auth-header';
 
 export default {
   name: "Login",
@@ -75,22 +77,35 @@ export default {
   methods: {
     async handleLogin(user) {
       this.loading = true;
-
-      this.$store.dispatch("auth/login", user).then(
-        () => {
-          this.$router.push("/home");
-          
-        },
-        (error) => {
-          this.loading = false;
+        await axios.post('https://backend-front-test.dev.echo-company.ru/api/auth/login', {
+                phone: user.phone,
+                password: user.password
+            })
+            .then(response => {
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                    axios.get('https://backend-front-test.dev.echo-company.ru/api/user', { headers: authHeader() })
+                      .then(response => {
+                        if (response.data) {
+                            localStorage.setItem('user', JSON.stringify(response.data));
+                            user = JSON.parse(localStorage.getItem('user'));
+                            console.log(user)
+                            this.$store.dispatch("auth/loginuser", user)
+                            this.$router.push("/home");
+                        }
+                        return response.data;
+                    });
+                }
+            },(error) => {
           this.message =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
             error.toString();
-        }
-      );
+          this.successful = false;
+          this.loading = false;
+        });
     },
   },
 };

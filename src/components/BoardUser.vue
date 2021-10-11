@@ -1,35 +1,30 @@
 <template>
   <div class="container">
     <header class="jumbotron">
-      <h3>{{ content }}</h3>
+      <h1>Личный Кабинет</h1>
+      <h3 v-if="currentUser">Здравствуйте {{ currentUser.first_name }} {{ currentUser.last_name }}!</h3>
+      <h6 v-if="currentUser">Ваш ID: {{ content.id }}</h6>
+      <h6 v-if="currentUser">Ваш телефон: {{ content.phone }}</h6>
     </header>
   </div>
 </template>
 
 <script>
-import UserService from "../services/user.service";
 
 export default {
   name: "User",
   data() {
     return {
-      content: "",
+      content:'',
     };
   },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+  },
   mounted() {
-    UserService.getUserBoard().then(
-      (response) => {
-        this.content = response.data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+    this.content = this.currentUser;
   },
 };
 </script>
