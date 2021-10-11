@@ -1,5 +1,6 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import UserService from "../services/user.service";
 
 const API_URL = 'https://backend-front-test.dev.echo-company.ru/api/';
 
@@ -13,6 +14,7 @@ class AuthService {
             .then(response => {
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
+                    UserService.getUserBoard();
                 }
 
                 return response.data;
@@ -30,6 +32,14 @@ class AuthService {
             first_name: user.first_name,
             last_name: user.last_name,
             password: user.password
+        })
+        .then(response => {
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                UserService.getUserBoard();
+            }
+
+            return response.data;
         });
     }
 }

@@ -39,7 +39,7 @@ const routes = [
   },
   {
     path: "/forgotpass",
-    name: "profile",
+    name: "forgotpass",
     // lazy-loaded
     component: ForgotPass,
   },

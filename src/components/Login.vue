@@ -73,12 +73,13 @@ export default {
     }
   },
   methods: {
-    handleLogin(user) {
+    async handleLogin(user) {
       this.loading = true;
 
       this.$store.dispatch("auth/login", user).then(
         () => {
           this.$router.push("/home");
+          
         },
         (error) => {
           this.loading = false;

@@ -11,12 +11,14 @@ class UserService {
             .then(response => {
                 if (response.data) {
                     localStorage.setItem('user', JSON.stringify(response.data));
+    
                 }
                 return response.data;
             });
-
+            
 
     }
 }
+
 
 export default new UserService();

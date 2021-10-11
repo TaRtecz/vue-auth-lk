@@ -6,15 +6,16 @@
         <h2 class="text-center">{{ msg }}</h2>
     <div class="row">
         <div class="col-12 col-md-6 mx-auto">
-            <form @submit.prevent="forgotPass">
+            <form @submit.prevent="handleForgotPass">
                 <div v-show="step === 1" class="step">
                     <div class="form-group">
                         <label for="phone">Телефон</label>
                         <input v-model="forgotForm.phone" type="text" class="form-control" id="phone" placeholder="Телефон">
                     </div>
-                    <button @click="nextStep"  type="button" class="btn btn-primary">Отправить код</button>
+                    <button @click="nextStep"  type="submit" class="btn btn-primary">Отправить код</button>
                 </div>
-
+            </form>
+            <form @submit.prevent="forgotPass">
                 <div v-show="step === 2" class="step">
                     <div class="form-group">
                         <label for="codeSMS">Код из СМС</label>
@@ -26,6 +27,13 @@
                     <button type="submit" class="btn btn-primary">Подтвердить код</button>
                 </div>
             </form>
+            <div
+                    v-if="message"
+                    class="alert"
+                    :class="successful ? 'alert-success' : 'alert-danger'"
+                >
+                    {{ message }}
+            </div>
             <div class="mt-2">
                 <router-link to="/register" class="badge badge-secondary mr-2 p-1">Регистрация</router-link>
                 <router-link to="/login" class="badge badge-secondary p-1">Вспомнил пароль!</router-link>
@@ -45,6 +53,7 @@ export default {
         return {
             msg: 'Восстановление пароля',
             step: 1,
+            message: "",
             isButtonDisabled: true,
             timertoSend: 20,
             forgotForm: {
@@ -53,6 +62,18 @@ export default {
             },
         }
       },
+
+    computed: {
+        loggedIn() {
+        return this.$store.state.auth.status.loggedIn;
+        },
+    },
+    created() {
+        if (this.loggedIn) {
+        this.$router.push("/home");
+        }
+    },
+
     methods: {
         nextStep() {
             if (this.step < 2) {
@@ -73,9 +94,25 @@ export default {
                 this.timertoSend = 20;
             }
         },
-        forgotPass() {
-            console.log('Code ok')
-        }
+        handleForgotPass(forgotForm) {
+            this.loading = true;
+
+            this.$store.dispatch("auth/login", forgotForm).then(
+                (data) => {
+                this.message = data.message;
+
+                },
+                (error) => {
+                this.loading = false;
+                this.message =
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                }
+            );
+        },
     }
 }
 </script>

@@ -3,13 +3,13 @@
     <header class="jumbotron">
       <h3> {{welcome_msg}} </h3>
       <h5></h5>
-      <h5>/*this.$store.state.auth.user.last_name*/ </h5>
+      <h5 v-if="currentUser">{{currentUser.first_name}} {{currentUser.last_name}}</h5>
     </header>
   </div>
 </template>
 
 <script>
-import UserService from "../services/user.service";
+// import UserService from "../services/user.service";
 
 export default {
   name: "Home",
@@ -19,21 +19,26 @@ export default {
       welcome_msg: "Добро пожаловать!",
     };
   },
+computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+  },
   mounted() {
-    UserService.getUserBoard().then(
-      (response) => {
-        this.content = response.data;
-        console.log(response.data)
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+    // UserService.getUserBoard().then(
+    //   (response) => {
+    //     this.content = response.data;
+    //     console.log(response.data)
+    //   },
+    //   (error) => {
+    //     this.content =
+    //       (error.response &&
+    //         error.response.data &&
+    //         error.response.data.message) ||
+    //       error.message ||
+    //       error.toString();
+    //   }
+    // );
   },
 };
 </script>
