@@ -20,8 +20,8 @@
                     <div class="form-group">
                         <label for="codeSMS">Код из СМС</label>
                         <input v-model="codeSMS" type="text" class="form-control" id="codeSMS" placeholder="Код из СМС">
-                        <p>Отправить код повторно, через {{timertoSend}} секунд</p>
-                        <button type="button" class="codeResend btn mt-2" v-bind:disabled="isButtonDisabled">Отправить код повторно</button>
+                        <p v-if="countDown > 0">Отправить код повторно, через {{countDown}} секунд</p>
+                        <button @click="resendCode" type="button" class="codeResend btn btn-light mt-2" v-else>Отправить код повторно</button>
                     </div>
                     <button @click="backStep" type="button" class="btn btn-light mr-2">Назад</button>
                     <button type="submit" class="btn btn-primary">Подтвердить код</button>
@@ -29,7 +29,7 @@
             </form>
             <div
                     v-if="message"
-                    class="alert"
+                    class="alert mt-3"
                     :class="successful ? 'alert-success' : 'alert-danger'"
                 >
                     {{ message }}
@@ -58,9 +58,9 @@ export default {
             step: 1,
             message: "",
             isButtonDisabled: true,
-            timertoSend: 20,
             phone: '',
             codeSMS: '',
+            countDown : 20,
         }
       },
 
@@ -76,23 +76,35 @@ export default {
     },
 
     methods: {
+        countDownTimer() {
+                if(this.countDown > 0) {
+                    setTimeout(() => {
+                        this.countDown -= 1
+                        this.countDownTimer()
+                    }, 1000)
+                }
+            },
+
         nextStep() {
-            if (this.step < 2) {
-                this.step++;
-                setTimeout(() => this.isButtonDisabled = false, 20000);
-            
-                // if(this.timertoSend > 0) {
-                //     setInterval(() => {
-                //         this.timertoSend--
-                //     }, 1000)
-                // }
+            if (this.phone != ""){
+                if (this.step < 2) {
+                    this.step++;
+                    setTimeout(() => this.isButtonDisabled = false, 20000);
+                
+                    // if(this.timertoSend > 0) {
+                    //     setInterval(() => {
+                    //         this.timertoSend--
+                    //     }, 1000)
+                    // }
+                }
             }
         },
         backStep() {
             if (this.step > 1) {
                 this.step--;
                 this.isButtonDisabled = true;
-                this.timertoSend = 20;
+                this.countDown = 20;
+                this.message = '';
             }
         },
     async handleForgotPass() {
@@ -105,6 +117,37 @@ export default {
             if (response.data) {
                 this.message = response.data.message;
                 if (response.data.success == true){
+                    this.countDownTimer()
+                    console.log(response.data);
+                }
+                
+                
+            }
+
+            return response.data;
+        },(error) => {
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          this.successful = false;
+          this.loading = false;
+        });
+        },
+       async resendCode(){
+           this.loading = true;
+            this.countDown = 20;
+            this.message = '';
+        await axios.post(API_URL + 'user/forgot-start', {
+            phone: this.phone,
+        })
+        .then(response => {
+            if (response.data) {
+                this.message = response.data.message;
+                if (response.data.success == true){
+                    this.countDownTimer()
                     console.log(response.data);
                 }
                 
