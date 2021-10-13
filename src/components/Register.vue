@@ -123,7 +123,7 @@ export default {
         .then(response => {
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                axios.get(API_URL + 'huser', { headers: authHeader() })
+                axios.get(API_URL + 'user', { headers: authHeader() })
                       .then(response => {
                         if (response.data) {
                             localStorage.setItem('user', JSON.stringify(response.data));

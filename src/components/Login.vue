@@ -14,7 +14,8 @@
         </div>
         <div class="form-group">
           <label for="password">Пароль</label>
-          <Field name="password" type="password" class="form-control" />
+          <Field name="password" v-bind:type="passwordType" class="form-control" />
+          <a :class="showPass ? 'password-view' : 'password-not-view'" @click="hidePass"></a>
           <ErrorMessage name="password" class="error-feedback" />
         </div>
 
@@ -54,14 +55,16 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      phone: yup.string().required("Phone is required!"),
-      password: yup.string().required("Password is required!"),
+      phone: yup.string().required("Обязательное поле!"),
+      password: yup.string().required("Обязательное поле!"),
     });
 
     return {
       loading: false,
       message: "",
       schema,
+      passwordType: "password",
+      showPass: false,
     };
   },
   computed: {
@@ -75,6 +78,14 @@ export default {
     }
   },
   methods: {
+    hidePass(){
+       this.showPass = !this.showPass
+       if (this.showPass) {
+          this.passwordType = 'text';
+        } else {
+          this.passwordType = 'password';
+        } 
+    },
     async handleLogin(user) {
       this.loading = true;
         await axios.post('https://backend-front-test.dev.echo-company.ru/api/auth/login', {
@@ -93,7 +104,7 @@ export default {
                             this.$store.dispatch("auth/loginuser", user)
                             this.$router.push("/user");
                         }
-                        return response.data;
+                        //return response.data;
                     });
                 }
             },(error) => {
@@ -148,4 +159,28 @@ label {
 .error-feedback {
   color: red;
 }
+
+.password-not-view{
+  position: absolute;
+  cursor: pointer;
+  top: 284px;
+  right: 50px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url("../assets/view.svg") 0 0 no-repeat;
+}
+
+.password-view{
+  position: absolute;
+  cursor: pointer;
+  top: 284px;
+  right: 50px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url("../assets/no-view.svg") 0 0 no-repeat;
+}
+
+
 </style>
