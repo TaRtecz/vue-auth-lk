@@ -73,22 +73,22 @@ export default {
     const schema = yup.object().shape({
       phone: yup
         .string()
-        .required("Phone is required!")
-        .min(3, "Must be at least 3 characters!")
-        .max(11, "Must be maximum 11 characters!"),
+        .required("Обязательное поле!")
+        .min(3, "Минимальная длина 3 символа!")
+        .max(11, "Максимальная длина 11 символов!"),
       first_name: yup
         .string()
-        .required("First name is required!")
-        .max(50, "Must be maximum 50 characters!"),
+        .required("Обязательное поле!")
+        .max(50, "Максимальная длина 50 символов!"),
       last_name: yup
         .string()
-        .required("Last name is required!")
-        .max(50, "Must be maximum 50 characters!"),
+        .required("Обязательное поле!")
+        .max(50, "Максимальная длина 50 символов!"),
       password: yup
         .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .required("Обязательное поле!")
+        .min(6, "Минимальная длина 6 символа!")
+        .max(40, "Максимальная длина 40 символов!"),
     });
 
     return {

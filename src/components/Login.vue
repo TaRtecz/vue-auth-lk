@@ -15,7 +15,7 @@
         <div class="form-group">
           <label for="password">Пароль</label>
           <Field name="password" v-bind:type="passwordType" class="form-control" />
-          <a :class="showPass ? 'password-view' : 'password-not-view'" @click="hidePass"></a>
+          <a :class="showPass ? 'password-view' : 'password-not-view'" @click="hidePass">Показать</a>
           <ErrorMessage name="password" class="error-feedback" />
         </div>
 
@@ -161,24 +161,18 @@ label {
 }
 
 .password-not-view{
-  position: absolute;
+  text-decoration: none;
   cursor: pointer;
-  top: 284px;
-  right: 50px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
   background: url("../assets/view.svg") 0 0 no-repeat;
 }
 
 .password-view{
-  position: absolute;
+  text-decoration: none;
   cursor: pointer;
-  top: 284px;
-  right: 50px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  background: url("../assets/no-view.svg") 0 0 no-repeat;
+}
+.password-view::before{
+  content: '';
   background: url("../assets/no-view.svg") 0 0 no-repeat;
 }
 
