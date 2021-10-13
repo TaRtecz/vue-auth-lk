@@ -38,6 +38,9 @@
               Регистрация
             </button>
           </div>
+          <router-link to="/login" class="nav-link text-center">
+            <font-awesome-icon icon="sign-in-alt" /> Авторизация
+          </router-link>
         </div>
       </Form>
 

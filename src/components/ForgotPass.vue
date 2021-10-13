@@ -15,16 +15,21 @@
                     <button @click="nextStep"  type="submit" class="btn btn-primary">Отправить код</button>
                 </div>
             </form>
-            <form @submit.prevent="forgotPass">
+            <form  v-if="!successful"  @submit.prevent="forgotPassConfirm">  
                 <div v-show="step === 2" class="step">
+                    
                     <div class="form-group">
                         <label for="codeSMS">Код из СМС</label>
-                        <input v-model="codeSMS" type="text" class="form-control" id="codeSMS" placeholder="Код из СМС">
+                        <input v-model="codeSMS" type="text" class="form-control" id="codeSMS" maxlength="4" placeholder="Код из СМС">
                         <p v-if="countDown > 0">Отправить код повторно, через {{countDown}} секунд</p>
                         <button @click="resendCode" type="button" class="codeResend btn btn-light mt-2" v-else>Отправить код повторно</button>
                     </div>
-                    <button @click="backStep" type="button" class="btn btn-light mr-2">Назад</button>
-                    <button type="submit" class="btn btn-primary">Подтвердить код</button>
+                    <div class="form-group">
+                        <label for="password">Новый пароль</label>
+                        <input v-model="password" type="password" class="form-control" id="password" placeholder="Новый пароль">
+                    </div>
+                    <button v-if="!successful" @click="backStep" type="button" class="btn btn-light mr-2">Назад</button>
+                    <button v-if="!successful" type="submit" class="btn btn-primary">Подтвердить код</button>
                 </div>
             </form>
             <div
@@ -33,7 +38,18 @@
                     :class="successful ? 'alert-success' : 'alert-danger'"
                 >
                     {{ message }}
+                <div
+                        v-if="successful"
+                        class="mt-3"
+                        :class="successful ? 'alert-success' : 'alert-danger'"
+                    >
+                        Перейдите на страницу Авторизации
+                    <router-link to="/login" class="nav-link text-center mt-3">
+                        <font-awesome-icon icon="sign-in-alt" /> Авторизация
+                    </router-link>
+                </div>
             </div>
+            
             <div class="mt-2">
                 <router-link to="/register" class="badge badge-secondary mr-2 p-1">Регистрация</router-link>
                 <router-link to="/login" class="badge badge-secondary p-1">Вспомнил пароль!</router-link>
@@ -60,7 +76,9 @@ export default {
             isButtonDisabled: true,
             phone: '',
             codeSMS: '',
+            password: '',
             countDown : 20,
+            successful: false,
         }
       },
 
@@ -136,6 +154,7 @@ export default {
           this.loading = false;
         });
         },
+
        async resendCode(){
            this.loading = true;
             this.countDown = 20;
@@ -162,7 +181,40 @@ export default {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          this.successful = false;
+          
+          this.loading = false;
+        });
+        },
+
+        async forgotPassConfirm(){
+           this.loading = true;
+            this.countDown = 0;
+            this.message = '';
+        await axios.post(API_URL + 'user/forgot-end', {
+            phone: this.phone,
+            code: this.codeSMS,
+            password: this.password,
+        })
+        .then(response => {
+            if (response.data) {
+                this.message = response.data.message;
+                if (response.data.success == true){
+                    this.successful = true;
+                    console.log(response.data);
+                }
+                
+                
+            }
+
+            return response.data;
+        },(error) => {
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+         
           this.loading = false;
         });
         },

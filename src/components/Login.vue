@@ -91,7 +91,7 @@ export default {
                             user = JSON.parse(localStorage.getItem('user'));
                             console.log(user)
                             this.$store.dispatch("auth/loginuser", user)
-                            this.$router.push("/home");
+                            this.$router.push("/user");
                         }
                         return response.data;
                     });
