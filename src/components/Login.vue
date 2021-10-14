@@ -9,7 +9,7 @@
       <Form @submit="handleLogin" :validation-schema="schema">
         <div class="form-group">
           <label for="phone">Номер телефона</label>
-          <Field name="phone" type="text" class="form-control" />
+          <Field name="phone" type="text" class="form-control" maxlength="11" />
           <ErrorMessage name="phone" class="error-feedback" />
         </div>
         <div class="form-group">
