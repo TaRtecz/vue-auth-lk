@@ -15,12 +15,16 @@
         <div class="form-group">
           <label for="password">Пароль</label>
           <Field name="password" v-bind:type="passwordType" class="form-control" />
-          <a :class="showPass ? 'password-view' : 'password-not-view'" @click="hidePass">Показать</a>
+          <a class="password-view" @click="hidePass">{{lookPass}}</a><br>
           <ErrorMessage name="password" class="error-feedback" />
         </div>
+          <div class="form-check mb-1">
+            <input type="checkbox" class="form-check-input" id="checkbox">
+            <label class="form-check-label" for="checkbox">Запомнить меня</label>
+          </div>
 
         <div class="form-group">
-          <button class="btn btn-primary btn-block" :disabled="loading">
+          <button class="btn btn-success btn-block" :disabled="loading">
             <span
               v-show="loading"
               class="spinner-border spinner-border-sm"
@@ -45,6 +49,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import axios from 'axios';
 import authHeader from '../services/auth-header';
+const API_URL = 'https://backend-front-test.dev.echo-company.ru/api/';
 
 export default {
   name: "Login",
@@ -65,6 +70,7 @@ export default {
       schema,
       passwordType: "password",
       showPass: false,
+      lookPass: 'Показать пароль',
     };
   },
   computed: {
@@ -82,20 +88,22 @@ export default {
        this.showPass = !this.showPass
        if (this.showPass) {
           this.passwordType = 'text';
+          this.lookPass = 'Скрыть пароль'
         } else {
           this.passwordType = 'password';
+          this.lookPass = 'Показать пароль'
         } 
     },
     async handleLogin(user) {
       this.loading = true;
-        await axios.post('https://backend-front-test.dev.echo-company.ru/api/auth/login', {
+        await axios.post(API_URL + 'auth/login', {
                 phone: user.phone,
                 password: user.password
             })
             .then(response => {
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
-                    axios.get('https://backend-front-test.dev.echo-company.ru/api/user', { headers: authHeader() })
+                    axios.get(API_URL + 'user', { headers: authHeader() })
                       .then(response => {
                         if (response.data) {
                             localStorage.setItem('user', JSON.stringify(response.data));
@@ -160,21 +168,9 @@ label {
   color: red;
 }
 
-.password-not-view{
-  text-decoration: none;
-  cursor: pointer;
-  background: url("../assets/view.svg") 0 0 no-repeat;
-}
-
 .password-view{
   text-decoration: none;
   cursor: pointer;
-  background: url("../assets/no-view.svg") 0 0 no-repeat;
 }
-.password-view::before{
-  content: '';
-  background: url("../assets/no-view.svg") 0 0 no-repeat;
-}
-
 
 </style>

@@ -25,12 +25,13 @@
           </div>
           <div class="form-group">
             <label for="password">Пароль</label>
-            <Field name="password" type="password" class="form-control" />
+            <Field name="password" v-bind:type="passwordType" class="form-control" />
+          <a class="password-view" @click="hidePass">{{lookPass}}</a><br>
             <ErrorMessage name="password" class="error-feedback" />
           </div>
 
           <div class="form-group">
-            <button class="btn btn-primary btn-block" :disabled="loading">
+            <button class="btn btn-success btn-block" :disabled="loading">
               <span
                 v-show="loading"
                 class="spinner-border spinner-border-sm"
@@ -96,6 +97,9 @@ export default {
       loading: false,
       message: "",
       schema,
+      passwordType: "password",
+      showPass: false,
+      lookPass: 'Показать пароль',
     };
   },
   computed: {
@@ -109,6 +113,16 @@ export default {
     }
   },
   methods: {
+    hidePass(){
+        this.showPass = !this.showPass
+        if (this.showPass) {
+            this.passwordType = 'text';
+            this.lookPass = 'Скрыть пароль'
+          } else {
+            this.passwordType = 'password';
+            this.lookPass = 'Показать пароль'
+          } 
+    },
     async handleRegister(user) {
       this.message = "";
       this.successful = false;
@@ -147,24 +161,6 @@ export default {
           this.successful = false;
           this.loading = false;
         });
-
-
-
-      // this.$store.dispatch("auth/register", user).then(
-      //   () => {
-      //     this.$router.push("/home");
-      //   },
-      //   (error) => {
-      //     this.message =
-      //       (error.response &&
-      //         error.response.data &&
-      //         error.response.data.message) ||
-      //       error.message ||
-      //       error.toString();
-      //     this.successful = false;
-      //     this.loading = false;
-      //   }
-      // );
     },
   },
 };
@@ -207,4 +203,10 @@ label {
 .error-feedback {
   color: red;
 }
+
+.password-view{
+  text-decoration: none;
+  cursor: pointer;
+}
+
 </style>

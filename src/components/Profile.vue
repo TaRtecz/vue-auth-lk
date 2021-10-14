@@ -2,21 +2,9 @@
   <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>{{info}}</strong> Profile
+        <strong v-if="currentUser">Пасхалка</strong> 
       </h3>
     </header>
-    <p>
-      <strong>Token:</strong>
-      
-    </p>
-    <p>
-      <strong>Id:</strong>
-      {{currentUser.id}}
-    </p>
-    <p>
-      <strong>Email:</strong>
-      {{currentUser.phone}}
-    </p>
   </div>
 </template>
 
@@ -29,12 +17,10 @@ export default {
     }
   },
   created() {
-    this.info = this.$store.state.auth.user;
     console.log(this.$store.state.auth.user)
   },
 
   mounted() {
-      this.info = this.$store.state.auth.user.first_name
     if (!this.currentUser) {
       this.$router.push('/login');
     }

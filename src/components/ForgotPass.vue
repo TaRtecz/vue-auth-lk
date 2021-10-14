@@ -12,7 +12,7 @@
                         <label for="phone">Телефон</label>
                         <input v-model="phone" type="text" class="form-control" id="phone" placeholder="Телефон">
                     </div>
-                    <button @click="nextStep"  type="submit" class="btn btn-primary">Отправить код</button>
+                    <button @click="nextStep"  type="submit" class="btn btn-success">Отправить код</button>
                 </div>
             </form>
             <form  v-if="!successful"  @submit.prevent="forgotPassConfirm">  
@@ -26,10 +26,11 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Новый пароль</label>
-                        <input v-model="password" type="password" class="form-control" id="password" placeholder="Новый пароль">
+                        <input v-model="password" v-bind:type="passwordType" class="form-control" id="password" placeholder="Новый пароль">
+                        <a class="password-view" @click="hidePass">{{lookPass}}</a><br>
                     </div>
                     <button v-if="!successful" @click="backStep" type="button" class="btn btn-light mr-2">Назад</button>
-                    <button v-if="!successful" type="submit" class="btn btn-primary">Подтвердить код</button>
+                    <button v-if="!successful" type="submit" class="btn btn-success">Подтвердить код</button>
                 </div>
             </form>
             <div
@@ -79,6 +80,9 @@ export default {
             password: '',
             countDown : 20,
             successful: false,
+            passwordType: "password",
+            showPass: false,
+            lookPass: 'Показать пароль',
         }
       },
 
@@ -94,6 +98,16 @@ export default {
     },
 
     methods: {
+        hidePass(){
+        this.showPass = !this.showPass
+        if (this.showPass) {
+            this.passwordType = 'text';
+            this.lookPass = 'Скрыть пароль'
+            } else {
+            this.passwordType = 'password';
+            this.lookPass = 'Показать пароль'
+            } 
+        },
         countDownTimer() {
                 if(this.countDown > 0) {
                     setTimeout(() => {
@@ -108,12 +122,6 @@ export default {
                 if (this.step < 2) {
                     this.step++;
                     setTimeout(() => this.isButtonDisabled = false, 20000);
-                
-                    // if(this.timertoSend > 0) {
-                    //     setInterval(() => {
-                    //         this.timertoSend--
-                    //     }, 1000)
-                    // }
                 }
             }
         },
@@ -138,8 +146,6 @@ export default {
                     this.countDownTimer()
                     console.log(response.data);
                 }
-                
-                
             }
 
             return response.data;
@@ -224,5 +230,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
+.password-view{
+  text-decoration: none;
+  cursor: pointer;
+}
 </style>
