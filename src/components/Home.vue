@@ -3,17 +3,9 @@
     <header class="jumbotron">
       <h3> {{welcome_msg}} </h3>
       <h5></h5>
-      <h5 v-if="currentUser">{{currentUser.first_name}} {{currentUser.last_name}}</h5>
-      <div v-else>Пожалуйста войдите или зарегистрируйтесь
+      <div>
         <div class="flex-not-auth">
-          <router-link to="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" /> Войти
-          </router-link>
-        <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" /> Регистрация
-          </router-link>
-          </div>
-        
+        </div>
       </div>
     </header>
   </div>
